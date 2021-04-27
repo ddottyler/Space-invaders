@@ -89,9 +89,13 @@ class Enemy(Ship):
 def main():
     run = True
     FPS = 60
-    level = 1
+    level = 0
     lives = 5
     main_font = pygame.font.SysFont("comicsans", 50)
+
+    enemies = []
+    wave_length = 5
+    enemy_vel = 1
 
     player_vel = 5
 
@@ -107,13 +111,25 @@ def main():
         WIN.blit(lives_label, (10, 10))
         # Line below has been written dynamically. WIN width and height can be changed and this will still work
         WIN.blit(level_label, (WIDTH - level_label.get_width() - 10, 10))
+        for enemy in enemies:
+            enemy.draw(WIN)
+
         player.draw(WIN)
+
         # Finish with the display update
         pygame.display.update()
 
     while run:
         clock.tick(FPS)
-        redraw_window()
+
+        if len(enemies) == 0:
+            level += 1
+            wave_length += 5
+            for i in range(wave_length):
+                # Line below means that enemies will spawn above the window and move down with random colors
+                enemy = Enemy(random.randrange(
+                    50, WIDTH - 100), random.randrange(-1500, -100), random.choice(["red", "blue", "green"]))
+                enemies.append(enemy)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -128,6 +144,15 @@ def main():
             player.y -= player_vel
         if keys[pygame.K_DOWN] and player.y + player_vel + player.get_height() < HEIGHT:  # down
             player.y += player_vel
+
+        # The below (enemies[:] is a copy of the enemies list so that we don't alter it)
+        for enemy in enemies[:]:
+            enemy.move(enemy_vel)
+            if enemy.y + enemy.get_height() > HEIGHT:
+                lives -= 1
+                enemies.remove(enemy)
+
+        redraw_window()
 
 
 main()
