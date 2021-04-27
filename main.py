@@ -10,15 +10,15 @@ pygame.display.set_caption("Space Shooter")
 
 # Load images
 
-RED_SPACE_SHIPS = pygame.image.load(
+RED_SPACE_SHIP = pygame.image.load(
     os.path.join("assets", "pixel_ship_red_small.png"))
-GREEN_SPACE_SHIPS = pygame.image.load(
+GREEN_SPACE_SHIP = pygame.image.load(
     os.path.join("assets", "pixel_ship_green_small.png"))
-BLUE_SPACE_SHIPS = pygame.image.load(
+BLUE_SPACE_SHIP = pygame.image.load(
     os.path.join("assets", "pixel_ship_blue_small.png"))
 
 # Player ship
-YELLOW_SPACE_SHIPS = pygame.image.load(
+YELLOW_SPACE_SHIP = pygame.image.load(
     os.path.join("assets", "pixel_ship_yellow.png"))
 
 # Lasers
@@ -50,7 +50,24 @@ class Ship:
         self.cool_down_counter = 0
 
     def draw(self, window):
-        pygame.draw.rect(window, (255, 0, 0), (self.x, self.y, 50, 50))
+        window.blit(self.ship_img, (self.x, self.y))
+
+    def get_width(self):
+        return self.ship_img.get_width()
+
+    def get_height(self):
+        return self.ship_img.get_height()
+
+
+class Player(Ship):
+    def __init__(self, x, y, health=100):
+        # Here we are using super to inherit the ship class's init when init a player class
+        super().__init__(x, y, health)
+        self.ship_img = YELLOW_SPACE_SHIP
+        self.laser_img = YELLOW_LASER
+        # pygame mask allows us to have pixel perfect collisions
+        self.mask = pygame.mask.from_surface(self.ship_img)
+        self.max_health = health
 
 
 def main():
@@ -62,7 +79,7 @@ def main():
 
     player_vel = 5
 
-    ship = Ship(300, 650)
+    player = Player(300, 650)
 
     clock = pygame.time.Clock()
 
@@ -74,7 +91,7 @@ def main():
         WIN.blit(lives_label, (10, 10))
         # Line below has been written dynamically. WIN width and height can be changed and this will still work
         WIN.blit(level_label, (WIDTH - level_label.get_width() - 10, 10))
-        ship.draw(WIN)
+        player.draw(WIN)
         # Finish with the display update
         pygame.display.update()
 
@@ -87,14 +104,14 @@ def main():
                 run = False
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and ship.x - player_vel > 0:  # left
-            ship.x -= player_vel
-        if keys[pygame.K_RIGHT] and ship.x + player_vel + 50 < WIDTH:  # right
-            ship.x += player_vel
-        if keys[pygame.K_UP] and ship.y - player_vel > 0:  # up
-            ship.y -= player_vel
-        if keys[pygame.K_DOWN] and ship.y + player_vel + 50 < HEIGHT:  # down
-            ship.y += player_vel
+        if keys[pygame.K_LEFT] and player.x - player_vel > 0:  # left
+            player.x -= player_vel
+        if keys[pygame.K_RIGHT] and player.x + player_vel + player.get_width() < WIDTH:  # right
+            player.x += player_vel
+        if keys[pygame.K_UP] and player.y - player_vel > 0:  # up
+            player.y -= player_vel
+        if keys[pygame.K_DOWN] and player.y + player_vel + player.get_height() < HEIGHT:  # down
+            player.y += player_vel
 
 
 main()
