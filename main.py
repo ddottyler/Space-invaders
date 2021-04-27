@@ -36,7 +36,8 @@ YELLOW_LASER = pygame.image.load(
 BG = pygame.transform.scale(pygame.image.load(
     os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
 
-# Abstract class. Won't be used, but we will inherit from it (enemy SHIP, player SHIP etc)
+# CONSTANTS
+REDUCE_HEALTH = 10
 
 
 class Laser:
@@ -48,6 +49,18 @@ class Laser:
 
     def draw(self, window):
         window.blit(self.img, (self.x, self.y))
+        for laser in self.lasers:
+            laser.draw(window)
+
+    def move_lasers(self, vel, obj)
+        self.cooldown()
+        for laser in self.lasers:
+          laser.move(vel)
+           if laser.offscreen(HEIGHT):
+                self.lasers.remove(laser)
+            elif laser.collision(obj):
+                obj.health -= REDUCE_HEALTH
+                self.lasers.remove(laser)
 
     def move(self, vel):
         self.y += vel
@@ -60,6 +73,7 @@ class Laser:
 
 
 class Ship:
+  # This is an abstract class. Won't be used, but we will inherit from it (enemy SHIP, player SHIP etc)
   # COOLDOWN is half a second because the FPS is 60 (1 second)
     COOLDOWN = 30
 
@@ -203,6 +217,8 @@ def main():
             player.y -= player_vel
         if keys[pygame.K_DOWN] and player.y + player_vel + player.get_height() < HEIGHT:  # down
             player.y += player_vel
+        if keys[pygame.K_SPACE]:
+            player.shoot
 
         # The below (enemies[:] is a copy of the enemies list so that we don't alter it)
         for enemy in enemies[:]:
