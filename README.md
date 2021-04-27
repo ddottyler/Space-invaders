@@ -1,5 +1,9 @@
 # Space-invaders
 
+## Project in action 
+
+<img src='Space-invaders-gif.gif'/>
+
 ## Project overview
 
 This project is a Space Invaders app built as I continue to learn Python using pygame. 
@@ -17,5 +21,3 @@ Once you have cloned and opened the repo:
 Movement:
 - Up = arrow keys
 - Shoot = Spacebar 
-
-## Project in action 
