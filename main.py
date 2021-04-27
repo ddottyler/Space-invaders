@@ -73,6 +73,7 @@ def main():
         # Line below has been written dynamically. WIN width and height can be changed and this will still work
         WIN.blit(level_label, (WIDTH - level_label.get_width() - 10, 10))
         ship.draw(WIN)
+        # Finish with the display update
         pygame.display.update()
 
     while run:
@@ -82,6 +83,10 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_A]:  # left
+        ship.x -= 1
 
 
 main()
